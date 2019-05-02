@@ -1,0 +1,218 @@
+-- ****************** SqlDBM: Microsoft SQL Server ******************
+-- ******************************************************************
+
+DROP TABLE [Manifest];
+GO
+
+
+DROP TABLE [Charter];
+GO
+
+
+DROP TABLE [PilotModel];
+GO
+
+
+DROP TABLE [Aircraft];
+GO
+
+
+DROP TABLE [Pilot];
+GO
+
+
+DROP TABLE [Passenger];
+GO
+
+
+DROP TABLE [Model];
+GO
+
+
+DROP TABLE [Customer];
+GO
+
+
+-- ************************************** [Pilot]
+
+CREATE TABLE [Pilot]
+(
+ [PilotId]      int NOT NULL ,
+ [Name]         varchar(50) NOT NULL ,
+ [HourlyRate]   decimal(18.2) NOT NULL ,
+ [WaitTimeRate] decimal(18.2) NOT NULL ,
+
+ CONSTRAINT [PK_Pilot] PRIMARY KEY CLUSTERED ([PilotId] ASC)
+);
+GO
+
+
+
+
+
+
+
+
+-- ************************************** [Passenger]
+
+CREATE TABLE [Passenger]
+(
+ [PassengerId] int NOT NULL ,
+ [Name]        varchar(50) NOT NULL ,
+
+ CONSTRAINT [PK_Passenger] PRIMARY KEY CLUSTERED ([PassengerId] ASC)
+);
+GO
+
+
+
+
+
+
+
+
+-- ************************************** [Model]
+
+CREATE TABLE [Model]
+(
+ [ModelId]      int NOT NULL ,
+ [Name]         varchar(50) NOT NULL ,
+ [Capacity]     int NOT NULL ,
+ [HourlyRate]   decimal(18.2) NOT NULL ,
+ [WaitTimeRate] decimal(18.2) NOT NULL ,
+
+ CONSTRAINT [PK_Model] PRIMARY KEY CLUSTERED ([ModelId] ASC)
+);
+GO
+
+
+
+
+
+
+
+
+-- ************************************** [Customer]
+
+CREATE TABLE [Customer]
+(
+ [CustomerId] int NOT NULL ,
+ [Name]       varchar(50) NOT NULL ,
+
+ CONSTRAINT [PK_Customer] PRIMARY KEY CLUSTERED ([CustomerId] ASC)
+);
+GO
+
+
+
+
+
+
+
+
+-- ************************************** [PilotModel]
+
+CREATE TABLE [PilotModel]
+(
+ [PilotId]                     int NOT NULL ,
+ [CertificationExpirationDate] date NOT NULL ,
+ [ModelId]                     int NOT NULL ,
+
+ CONSTRAINT [PK_PilotModel] PRIMARY KEY CLUSTERED ([PilotId] ASC, [ModelId] ASC),
+ CONSTRAINT [FK_181] FOREIGN KEY ([PilotId])  REFERENCES [Pilot]([PilotId]),
+ CONSTRAINT [FK_185] FOREIGN KEY ([ModelId])  REFERENCES [Model]([ModelId])
+);
+GO
+
+
+--SKIP Index: [fkIdx_181]
+
+--SKIP Index: [fkIdx_185]
+
+
+
+
+
+
+
+-- ************************************** [Aircraft]
+
+CREATE TABLE [Aircraft]
+(
+ [AircraftId] int NOT NULL ,
+ [Name]       varchar(50) NOT NULL ,
+ [TailNumber] varchar(50) NOT NULL ,
+ [ModelId]    int NOT NULL ,
+
+ CONSTRAINT [PK_Aircraft] PRIMARY KEY CLUSTERED ([AircraftId] ASC),
+ CONSTRAINT [FK_126] FOREIGN KEY ([ModelId])  REFERENCES [Model]([ModelId])
+);
+GO
+
+
+--SKIP Index: [fkIdx_126]
+
+
+
+
+
+
+
+-- ************************************** [Charter]
+
+CREATE TABLE [Charter]
+(
+ [CharterId]     int NOT NULL ,
+ [DepartureTime] datetime NOT NULL ,
+ [ReturnTime]    datetime NOT NULL ,
+ [Destination]   varchar(50) NOT NULL ,
+ [FlightHours]   decimal(18.2) NOT NULL ,
+ [WaitHours]     decimal(18.2) NOT NULL ,
+ [CustomerId]    int NOT NULL ,
+ [AircraftId]    int NOT NULL ,
+ [PilotId]       int NOT NULL ,
+
+ CONSTRAINT [PK_Charter] PRIMARY KEY CLUSTERED ([CharterId] ASC),
+ CONSTRAINT [FK_105] FOREIGN KEY ([CustomerId])  REFERENCES [Customer]([CustomerId]),
+ CONSTRAINT [FK_116] FOREIGN KEY ([AircraftId])  REFERENCES [Aircraft]([AircraftId]),
+ CONSTRAINT [FK_163] FOREIGN KEY ([PilotId])  REFERENCES [Pilot]([PilotId])
+);
+GO
+
+
+--SKIP Index: [fkIdx_105]
+
+--SKIP Index: [fkIdx_116]
+
+--SKIP Index: [fkIdx_163]
+
+
+
+
+
+
+
+-- ************************************** [Manifest]
+
+CREATE TABLE [Manifest]
+(
+ [CharterId]   int NOT NULL ,
+ [PassengerId] int NOT NULL ,
+
+ CONSTRAINT [PK_Manifest] PRIMARY KEY CLUSTERED ([CharterId] ASC, [PassengerId] ASC),
+ CONSTRAINT [FK_156] FOREIGN KEY ([CharterId])  REFERENCES [Charter]([CharterId]),
+ CONSTRAINT [FK_160] FOREIGN KEY ([PassengerId])  REFERENCES [Passenger]([PassengerId])
+);
+GO
+
+
+--SKIP Index: [fkIdx_156]
+
+--SKIP Index: [fkIdx_160]
+
+
+
+
+
+
+
